@@ -18,12 +18,16 @@ router.get('/', async () => {
 
 const ChatsController = () => import('#controllers/chats_controller')
 const AuthController = () => import('#controllers/auth_controller')
+const StandardSseController = () => import('#controllers/standard_sse_controller')
 
 router
   .group(() => {
     // 认证路由
     router.post('/auth/register', [AuthController, 'register'])
     router.post('/auth/login', [AuthController, 'login'])
+
+    // 标准 SSE 路由 (手动鉴权，不经过 auth 中间件)
+    router.get('/sse/standard', [StandardSseController, 'chat'])
 
     // 需要登录的路由
     router

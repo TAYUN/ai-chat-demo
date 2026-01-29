@@ -9,6 +9,7 @@ import { RouterView, RouterLink } from 'vue-router'
         <RouterLink to="/" active-class="active">Socket.IO</RouterLink>
         <RouterLink to="/ws-native" active-class="active">原生 WebSocket</RouterLink>
         <RouterLink to="/sse" active-class="active">SSE</RouterLink>
+        <RouterLink to="/sse/standard" active-class="active">标准 SSE</RouterLink>
       </div>
       <div id="header-extras"></div>
     </nav>

@@ -31,6 +31,11 @@ const router = createRouter({
       component: SSEChat,
     },
     {
+      path: '/sse/standard',
+      name: 'sse-standard',
+      component: () => import('../views/StandardSseChat.vue'),
+    },
+    {
       path: '/ws-native',
       name: 'native-ws',
       component: NativeWsChat,

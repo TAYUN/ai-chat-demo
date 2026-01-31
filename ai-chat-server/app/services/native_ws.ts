@@ -24,7 +24,7 @@ class NativeWsService {
   private clients = new Map<WebSocket, ClientData>()
   private messageHandlers: MessageHandler[] = []
   private connectHandlers: ConnectHandler[] = []
-  private heartbeatInterval: NodeJS.Timeout | undefined
+  private _heartbeatInterval: NodeJS.Timeout | undefined
 
   boot() {
     if (this.booted) {
@@ -106,7 +106,7 @@ class NativeWsService {
 
   // 启动心跳检测
   private startHeartbeat() {
-    this.heartbeatInterval = setInterval(() => {
+    this._heartbeatInterval = setInterval(() => {
       this.wss?.clients.forEach((ws) => {
         const client = this.clients.get(ws)
         if (!client) return

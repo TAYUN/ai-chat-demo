@@ -39,6 +39,11 @@ new Ignitor(APP_ROOT, { importer: IMPORTER })
   })
   .httpServer()
   .start()
+  .then(async () => {
+    console.log('HTTP server started, initializing WebSocket...')
+    await import('#start/native_ws')
+    console.log('WebSocket initialized successfully')
+  })
   .catch((error) => {
     process.exitCode = 1
     prettyPrintError(error)

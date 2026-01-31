@@ -19,8 +19,13 @@ export const useChatStore = defineStore('chat', () => {
   function connect() {
     if (socket.value?.connected) return
     const authStore = useAuthStore()
-    socket.value = io('http://localhost:3333',
+    // 优先使用环境变量中的地址，否则回退到 localhost
+    // 注意：在生产环境 Nginx 配置中，socket.io 通常需要通过 /socket.io 路径代理
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin
+    
+    socket.value = io(socketUrl,
       {
+        path: '/socket.io', // 明确指定 path，方便 Nginx 代理
         auth: {
           token: authStore.token // 重要：传递 Token
         }

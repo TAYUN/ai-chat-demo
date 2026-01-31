@@ -63,8 +63,13 @@ export const useNativeChatStore = defineStore('nativeChat', () => {
       return
     }
 
-    // 原生 WebSocket 连接，Token 通过 URL 参数传递
-    ws = new WebSocket(`ws://localhost:3333/ws?token=${token}`)
+    // 动态获取 WebSocket 地址，支持环境变量覆盖
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const host = window.location.host
+    const defaultWsUrl = `${protocol}//${host}/ws`
+    const wsUrl = import.meta.env.VITE_WS_URL || defaultWsUrl
+    
+    ws = new WebSocket(`${wsUrl}?token=${token}`)
 
     ws.onopen = () => {
       console.log('原生 WebSocket 已连接')

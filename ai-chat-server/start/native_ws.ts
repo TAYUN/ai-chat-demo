@@ -1,9 +1,25 @@
 import app from '@adonisjs/core/services/app'
+import server from '@adonisjs/core/services/server'
 import NativeWs from '#services/native_ws'
 import AIService from '#services/ai_service'
 import Message from '#models/message'
 
-app.ready(() => {
+// 等待 HTTP 服务器启动后再初始化 WebSocket
+app.ready(async () => {
+  // 轮询等待 HTTP 服务器准备好
+  let attempts = 0
+  const maxAttempts = 50 // 最多等待 5 秒
+
+  while (!server.getNodeServer() && attempts < maxAttempts) {
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    attempts++
+  }
+
+  if (!server.getNodeServer()) {
+    console.error('无法获取 HTTP server 实例，WebSocket 初始化失败')
+    return
+  }
+
   NativeWs.boot()
   const aiService = new AIService()
 

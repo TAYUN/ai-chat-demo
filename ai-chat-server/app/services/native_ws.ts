@@ -24,7 +24,8 @@ class NativeWsService {
   private clients = new Map<WebSocket, ClientData>()
   private messageHandlers: MessageHandler[] = []
   private connectHandlers: ConnectHandler[] = []
-  private _heartbeatInterval: NodeJS.Timeout | undefined
+  // @ts-ignore
+  private heartbeatInterval: NodeJS.Timeout | undefined
 
   boot() {
     if (this.booted) {
@@ -32,8 +33,15 @@ class NativeWsService {
     }
 
     this.booted = true
+    const nodeServer = server.getNodeServer()
+    if (!nodeServer) {
+      throw new Error(
+        'HTTP server not available. Make sure to call boot() after server is started.'
+      )
+    }
+
     this.wss = new WebSocketServer({
-      server: server.getNodeServer(),
+      server: nodeServer,
       path: '/ws',
     })
 
@@ -106,7 +114,7 @@ class NativeWsService {
 
   // 启动心跳检测
   private startHeartbeat() {
-    this._heartbeatInterval = setInterval(() => {
+    this.heartbeatInterval = setInterval(() => {
       this.wss?.clients.forEach((ws) => {
         const client = this.clients.get(ws)
         if (!client) return
